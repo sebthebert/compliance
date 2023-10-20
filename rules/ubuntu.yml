@@ -1,0 +1,14 @@
+rules:
+  - id: ubuntu_version_lts
+    description: Ubuntu version should be an LTS version
+    key: distribution_version
+    comparison:
+      operator: in
+      value: [ '16.04', '18.04', '20.04', '22.04' ]
+
+  - id: ubuntu_version_greater_2004
+    description: Ubuntu version should be '20.04' or greater
+    key: distribution_version
+    comparison:
+      operator: version_greater_equal_than
+      value: 20.04
