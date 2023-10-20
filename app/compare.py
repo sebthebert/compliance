@@ -18,5 +18,5 @@ def compare_version_gte(value, desired_value):
 compare_function = {
     'equal': compare_equal,
     'in': compare_in,
-    'version_greater_equal_than': compare_version_gte
+    'version_greater_or_equal': compare_version_gte
 }
