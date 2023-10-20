@@ -6,9 +6,9 @@ from compare import compare_function
 from plugins.os import distribution_name, distribution_version, distribution_codename
 
 key_function = {
-    'distribution_name':            distribution_name,
-    'distribution_version':         distribution_version,
-    'distribution_codename':        distribution_codename,
+    'os.distribution_name':            distribution_name,
+    'os.distribution_version':         distribution_version,
+    'os.distribution_codename':        distribution_codename,
 }
 
 with open('../rules/ubuntu.yml') as f:
