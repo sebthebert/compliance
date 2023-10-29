@@ -1,7 +1,10 @@
+"""
+Compliance Plugin for Operating System information.
+"""
 import os
 import re
 
-parsers = {
+PARSERS = {
     '/etc/lsb-release': {
         'distribution': re.compile('^DISTRIB_ID=(.+)'),
         'version':      re.compile('^DISTRIB_RELEASE=(.+)'),
@@ -15,28 +18,40 @@ parsers = {
 }
 
 def distribution_name() -> str:
-    for p in parsers:
-        if os.path.exists(p):
-            with open(p) as f:
+    """
+    Function returning OS distribution name in lower string (ex.: 'ubuntu')
+    """
+    for path, regex in PARSERS.items():
+        if os.path.exists(path):
+            with open(path, encoding='utf-8') as f:
                 for line in f.readlines():
-                    match = re.match(parsers[p]['distribution'], line)
-                    if match: 
+                    match = re.match(regex['distribution'], line)
+                    if match:
                         return(match.group(1).lower())
+    return 'unknown'                  
 
 def distribution_version() -> str:
-    for p in parsers:
-        if os.path.exists(p):
-            with open(p) as f:
+    """
+    Function returning OS distribution version in lower string (ex.: '20.04')
+    """
+    for path, regex in PARSERS.items():
+        if os.path.exists(path):
+            with open(path, encoding='utf-8') as f:
                 for line in f.readlines():
-                    match = re.match(parsers[p]['version'], line)
-                    if match: 
+                    match = re.match(regex['version'], line)
+                    if match:
                         return(match.group(1).lower())
+    return 'unknown'
 
 def distribution_codename() -> str:
-    for p in parsers:
-        if os.path.exists(p):
-            with open(p) as f:
+    """
+    Function returning OS distribution codename in lower string (ex.: 'focal')
+    """
+    for path, regex in PARSERS.items():
+        if os.path.exists(path):
+            with open(path, encoding='utf-8') as f:
                 for line in f.readlines():
-                    match = re.match(parsers[p]['codename'], line)
-                    if match: 
+                    match = re.match(regex['codename'], line)
+                    if match:
                         return(match.group(1).lower())
+    return 'unknown'
