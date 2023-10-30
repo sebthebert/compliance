@@ -5,13 +5,14 @@ import mitogen
 import yaml
 from yaml.loader import SafeLoader
 
-from compare import compare_function
-from plugins.os import distribution_name, distribution_version, distribution_codename
+import compare
+import plugins.os
 
 key_function = {
-    'os.distribution_name':            distribution_name,
-    'os.distribution_version':         distribution_version,
-    'os.distribution_codename':        distribution_codename,
+    'os.distribution_name':     plugins.os.distribution_name,
+    'os.distribution_version':  plugins.os.distribution_version,
+    'os.distribution_codename': plugins.os.distribution_codename,
+    'os.linux_kernel_version':  plugins.os.linux_kernel_version,
 }
 
 with open('../rules/ubuntu.yml', encoding='utf-8') as f:
@@ -24,13 +25,24 @@ def main(router):
     """
 
     containers = (
+        'centos7',
+        'debian9',
+        'debian10',
+        'debian11',
+        'fedora31',
+        'fedora32',
+        'fedora33',                
         'ubuntu1804',
-        'ubuntu2004',
+        'ubuntu2004'
         )
 
     for host in containers:
         z = router.docker(container=host, python_path='/usr/bin/python3')
-        print(f"{host}: {z.call(distribution_name)} {z.call(distribution_version)} ({z.call(distribution_codename)})")
+        distrib = z.call(plugins.os.distribution_name)
+        version = z.call(plugins.os.distribution_version)
+        codename = z.call(plugins.os.distribution_codename)
+        kernel_version = z.call(plugins.os.linux_kernel_version)
+        print(f"{host}: {distrib} {version} ({codename}) ({kernel_version})")
 
         for rule in rules['rules']:
             rule_id = rule['id']
@@ -43,5 +55,5 @@ def main(router):
             # print(value)
             operator = rule['comparison']['operator']
             desired = rule['comparison']['value']
-            status = compare_function[operator](value, desired)
+            status = compare.compare_function[operator](value, desired)
             print(f"[{rule_id}] {rule_key}: {value} {operator} {desired} ? => {('OK' if status else 'KO')}")
