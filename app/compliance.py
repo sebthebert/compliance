@@ -8,6 +8,18 @@ from yaml.loader import SafeLoader
 import compare
 import plugins.os
 
+containers = (
+        'centos7',
+        'debian9',
+        'debian10',
+        'debian11',
+        'fedora31',
+        'fedora32',
+        'fedora33',                
+        'ubuntu1804',
+        'ubuntu2004'
+        )
+
 key_function = {
     'os.distribution_name':     plugins.os.distribution_name,
     'os.distribution_version':  plugins.os.distribution_version,
@@ -23,18 +35,6 @@ def main(router):
     """
     Main function
     """
-
-    containers = (
-        'centos7',
-        'debian9',
-        'debian10',
-        'debian11',
-        'fedora31',
-        'fedora32',
-        'fedora33',                
-        'ubuntu1804',
-        'ubuntu2004'
-        )
 
     for host in containers:
         z = router.docker(container=host, python_path='/usr/bin/python3')
@@ -55,5 +55,5 @@ def main(router):
             # print(value)
             operator = rule['comparison']['operator']
             desired = rule['comparison']['value']
-            status = compare.compare_function[operator](value, desired)
-            print(f"[{rule_id}] {rule_key}: {value} {operator} {desired} ? => {('OK' if status else 'KO')}")
+            status = 'OK' if compare.compare_function[operator](value, desired) else 'KO'
+            print(f"[{rule_id}] {rule_key}: {value} {operator} {desired} ? => {status}")
